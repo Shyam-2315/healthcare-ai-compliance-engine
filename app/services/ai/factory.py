@@ -1,14 +1,15 @@
 from app.config import get_settings
-from app.services.ai.azure_openai import AzureOpenAIClient
-from app.services.ai.base import AIClient
-from app.services.ai.local_ai import LocalAIClient
+from app.services.ai.azure_openai import AzureOpenAIService
+from app.services.ai.base import AIFindingsServiceBase
+from app.services.ai.local_ai import LocalDeterministicAI
 
 
-def get_ai_client() -> AIClient:
+def get_ai_service() -> AIFindingsServiceBase:
     settings = get_settings()
     provider = settings.ai_provider.lower()
-    if provider == "local":
-        return LocalAIClient()
-    if provider in {"azure", "azure_openai"}:
-        return AzureOpenAIClient(settings)
-    raise ValueError(f"Unsupported AI provider: {settings.ai_provider}")
+    if provider == "azure_openai":
+        return AzureOpenAIService(settings)
+    return LocalDeterministicAI()
+
+
+get_ai_client = get_ai_service

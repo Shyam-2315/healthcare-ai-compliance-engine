@@ -1,6 +1,6 @@
 import re
 from datetime import date, time
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import ConfigDict, Field, field_validator
 
@@ -104,9 +104,9 @@ class ExtractedClaimData(APIModel):
     )
 
 
-class ExtractionRequest(APIModel):
-    text: str = Field(min_length=1)
+class OCRTextInput(APIModel):
     document_type: DocumentType
+    raw_text: str = Field(min_length=1)
 
     model_config = ConfigDict(
         extra="forbid",
@@ -114,8 +114,38 @@ class ExtractionRequest(APIModel):
         json_schema_extra={
             "examples": [
                 {
-                    "text": "Claim ID: CLM-2026-00042\nCPT 90837\nDiagnosis F41.1",
                     "document_type": "clinical_notes",
+                    "raw_text": "Service date: 06/29/2026\nCPT 90837-HN\nDiagnosis F41.1",
+                }
+            ]
+        },
+    )
+
+
+class ExtractionRequest(APIModel):
+    claim_id: str = Field(min_length=1)
+    provider_id: str = Field(min_length=1)
+    patient_id: str = Field(min_length=1)
+    claim_date: date
+    ocr_results: list[OCRTextInput] = Field(min_length=1)
+    claim_context: dict[str, Any] = Field(default_factory=dict)
+
+    model_config = ConfigDict(
+        extra="forbid",
+        populate_by_name=True,
+        json_schema_extra={
+            "examples": [
+                {
+                    "claim_id": "CLAIM-001",
+                    "provider_id": "PROV-001",
+                    "patient_id": "PAT-001",
+                    "claim_date": "2026-06-29",
+                    "ocr_results": [
+                        {
+                            "document_type": "clinical_notes",
+                            "raw_text": "Service date: 06/29/2026\nCPT 90837-HN\nDiagnosis F41.1",
+                        }
+                    ],
                 }
             ]
         },

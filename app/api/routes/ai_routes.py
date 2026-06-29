@@ -5,11 +5,17 @@ from fastapi.responses import JSONResponse
 
 from app.api.schemas.analyze_schema import AnalyzeRequest, AnalyzeResponse
 from app.api.schemas.common import ErrorResponse, HealthResponse
-from app.api.schemas.extraction_schema import DocumentType, ExtractionRequest, ExtractionResponse
+from app.api.schemas.extraction_schema import (
+    DocumentType,
+    ExtractedClaimData,
+    ExtractionRequest,
+    ExtractionResponse,
+    OCRTextInput,
+)
 from app.api.schemas.ocr_schema import OCRResponse, OCRResultResponse
 from app.api.schemas.validation_schema import ValidationRequest, ValidationResponse
 from app.config import get_settings
-from app.services.ai.factory import get_ai_client
+from app.services.ai.factory import get_ai_service
 from app.services.ocr.base import (
     EmptyFileError,
     OCRProcessingError,
@@ -76,12 +82,19 @@ async def run_ocr(
 
 @router.post(
     "/extract",
-    response_model=ExtractionResponse,
+    response_model=ExtractedClaimData,
     summary="Extract structured claim details from text",
 )
-async def extract_claim(request: ExtractionRequest) -> ExtractionResponse:
-    ai_client = get_ai_client()
-    return await ai_client.extract(request)
+async def extract_claim(request: ExtractionRequest) -> ExtractedClaimData:
+    ai_service = get_ai_service()
+    claim_context = {
+        **request.claim_context,
+        "claim_id": request.claim_id,
+        "provider_id": request.provider_id,
+        "patient_id": request.patient_id,
+        "claim_date": request.claim_date,
+    }
+    return ai_service.extract(request.ocr_results, claim_context=claim_context)
 
 
 @router.post(
@@ -103,9 +116,16 @@ async def validate_claim(request: ValidationRequest) -> ValidationResponse:
     summary="Run extraction, validation, and scoring for claim text",
 )
 async def analyze_claim(request: AnalyzeRequest) -> AnalyzeResponse:
-    ai_client = get_ai_client()
-    extraction = await ai_client.extract(
-        ExtractionRequest(text=request.text, document_type=request.document_type)
+    ai_service = get_ai_service()
+    extracted_fields = ai_service.extract(
+        [OCRTextInput(document_type=request.document_type, raw_text=request.text)],
+        claim_context=request.context,
+    )
+    extraction = ExtractionResponse(
+        document_type=request.document_type,
+        extracted_fields=extracted_fields,
+        confidence=1.0,
+        provider=ai_service.provider_name,
     )
     validation = ValidationRequest(claim=extraction.extracted_fields, context=request.context)
     engine = ComplianceRuleEngine()

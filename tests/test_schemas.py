@@ -66,14 +66,26 @@ def test_claim_date_must_be_valid_date() -> None:
 
 @pytest.mark.parametrize("document_type", ["treatment_plan", "clinical_notes", "dla20"])
 def test_extraction_request_accepts_supported_document_types(document_type: str) -> None:
-    request = ExtractionRequest(text="source text", document_type=document_type)
+    request = ExtractionRequest(
+        claim_id="CLAIM-001",
+        provider_id="PROV-001",
+        patient_id="PAT-001",
+        claim_date="2026-06-29",
+        ocr_results=[{"document_type": document_type, "raw_text": "source text"}],
+    )
 
-    assert request.document_type == document_type
+    assert request.ocr_results[0].document_type == document_type
 
 
 def test_extraction_request_rejects_unsupported_document_type() -> None:
     with pytest.raises(ValidationError):
-        ExtractionRequest(text="source text", document_type="claim")
+        ExtractionRequest(
+            claim_id="CLAIM-001",
+            provider_id="PROV-001",
+            patient_id="PAT-001",
+            claim_date="2026-06-29",
+            ocr_results=[{"document_type": "claim", "raw_text": "source text"}],
+        )
 
 
 @pytest.mark.parametrize("score", [0, 100])
