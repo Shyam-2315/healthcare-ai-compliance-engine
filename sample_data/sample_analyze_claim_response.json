@@ -1,0 +1,311 @@
+{
+  "claim_id": "CLAIM-001",
+  "ai_status": "validated",
+  "compliance_score": 100.0,
+  "score_band": "Excellent",
+  "ocr_summary": {
+    "total_documents": 3,
+    "treatment_plan_documents": 1,
+    "clinical_note_documents": 1,
+    "dla20_documents": 1
+  },
+  "extracted_data": {
+    "claim_id": "CLAIM-001",
+    "provider_id": "PROV-001",
+    "patient_id": "PAT-001",
+    "claim_date": "2026-06-29",
+    "patient_name": "Jane Doe",
+    "patient_dob": "1990-05-14",
+    "provider_name": "Jordan Smith, LCSW",
+    "provider_license": "LCSW",
+    "provider_npi": "1234567890",
+    "service_dates": [
+      "2026-06-29"
+    ],
+    "session_start_time": "09:00:00",
+    "session_end_time": "10:00:00",
+    "session_duration_minutes": 60,
+    "service_location": "Clinic A",
+    "cpt_codes": [
+      "90837"
+    ],
+    "modifiers": [
+      "HN"
+    ],
+    "place_of_service": "11",
+    "diagnosis_codes": [
+      "F32.1"
+    ],
+    "billed_units": 4,
+    "treatment_plan_date": "2026-06-01",
+    "authorization_number": "AUTH-2026-4451",
+    "treatment_goals": [
+      "Improve coping skills for anxiety and depression symptoms",
+      "Strengthen housing stability and home routine"
+    ],
+    "clinical_narrative": "The clinician reviewed coping skills, grounding techniques, housing stability plans, budgeting steps, communication strategies, sleep routine goals, medication adherence, family stressors, problem solving, emotional regulation, safety planning, and community supports. The patient practiced coping skills in session, discussed housing follow-up tasks, identified barriers, responded to coaching, and agreed to continue the documented treatment goals.",
+    "clinical_note_date": "2026-06-29",
+    "provider_signature_present": true,
+    "dla20_deficiency_areas": [
+      "coping_skills",
+      "housing_stability"
+    ],
+    "dla20_scores": {
+      "coping_skills": 2,
+      "housing_stability": 2
+    },
+    "dla20_total_score": 2.0,
+    "treatment_plan_raw": "Treatment goals include improving coping skills for anxiety and depression symptoms and strengthening housing stability with practical home routine supports.",
+    "clinical_notes_raw": "Unique clinical note about coping skills, housing stability, and patient-specific interventions.",
+    "dla20_raw": "Coping Skills: 2\nHousing Stability: 2\nDLA-20 Total Score: 2"
+  },
+  "flag_summary": {
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "rule_results": [
+    {
+      "rule_id": "TP-001",
+      "rule_name": "Treatment Plan Must Be Current",
+      "category": "Treatment Plan",
+      "priority": "high",
+      "status": "pass",
+      "message": "Treatment plan is current for the claim date.",
+      "red_flag_level": "none",
+      "detail": {
+        "age_days": 28,
+        "validity_days": 180
+      }
+    },
+    {
+      "rule_id": "TP-002",
+      "rule_name": "Authorization Present on Plan",
+      "category": "Treatment Plan",
+      "priority": "high",
+      "status": "pass",
+      "message": "Authorization number is present on the treatment plan.",
+      "red_flag_level": "none",
+      "detail": {
+        "authorization_number": "AUTH-2026-4451"
+      }
+    },
+    {
+      "rule_id": "TP-003",
+      "rule_name": "Goals Align with DLA-20 Deficiencies",
+      "category": "Treatment Plan",
+      "priority": "high",
+      "status": "pass",
+      "message": "Treatment plan goals align with documented DLA-20 deficiencies.",
+      "red_flag_level": "none",
+      "detail": {
+        "deficiency_areas": [
+          "coping_skills",
+          "housing_stability"
+        ]
+      }
+    },
+    {
+      "rule_id": "CPT-001",
+      "rule_name": "CPT Code Valid per BHS Matrix",
+      "category": "Coding",
+      "priority": "high",
+      "status": "pass",
+      "message": "All CPT codes are valid per the BHS matrix.",
+      "red_flag_level": "none",
+      "detail": {
+        "cpt_codes": [
+          "90837"
+        ]
+      }
+    },
+    {
+      "rule_id": "MOD-001",
+      "rule_name": "Modifier Valid for CPT Code",
+      "category": "Coding",
+      "priority": "medium",
+      "status": "pass",
+      "message": "All modifiers are valid for the billed CPT codes.",
+      "red_flag_level": "none",
+      "detail": {
+        "modifiers": [
+          "HN"
+        ]
+      }
+    },
+    {
+      "rule_id": "POS-001",
+      "rule_name": "Place of Service Allowed per BHS Matrix",
+      "category": "Coding",
+      "priority": "high",
+      "status": "pass",
+      "message": "Place of service is allowed for the billed CPT codes.",
+      "red_flag_level": "none",
+      "detail": {
+        "place_of_service": "11"
+      }
+    },
+    {
+      "rule_id": "DX-001",
+      "rule_name": "ICD-10 Diagnosis Code Valid",
+      "category": "Coding",
+      "priority": "high",
+      "status": "pass",
+      "message": "Diagnosis codes are valid for billing.",
+      "red_flag_level": "none",
+      "detail": {
+        "diagnosis_codes": [
+          "F32.1"
+        ]
+      }
+    },
+    {
+      "rule_id": "DUR-001",
+      "rule_name": "Session Duration Matches Billed Units",
+      "category": "Billing",
+      "priority": "high",
+      "status": "pass",
+      "message": "Session duration aligns with billed units.",
+      "red_flag_level": "none",
+      "detail": {
+        "session_duration_minutes": 60,
+        "billed_units": 4,
+        "expected_units": 4
+      }
+    },
+    {
+      "rule_id": "UNIT-001",
+      "rule_name": "Units Within Allowable Range",
+      "category": "Billing",
+      "priority": "medium",
+      "status": "pass",
+      "message": "Billed units are within the allowable daily range.",
+      "red_flag_level": "none",
+      "detail": {
+        "billed_units": 4,
+        "max_units_per_day": 16
+      }
+    },
+    {
+      "rule_id": "TOVL-001",
+      "rule_name": "No Time Overlap in Claims",
+      "category": "Billing",
+      "priority": "high",
+      "status": "pass",
+      "message": "No overlapping claims were detected for the same provider and service date.",
+      "red_flag_level": "none",
+      "detail": {}
+    },
+    {
+      "rule_id": "CN-001",
+      "rule_name": "Clinical Note Matches Treatment Plan Goals",
+      "category": "Documentation",
+      "priority": "medium",
+      "status": "pass",
+      "message": "Clinical narrative references the treatment plan goals.",
+      "red_flag_level": "none",
+      "detail": {
+        "goal_match_ratio": 1.0
+      }
+    },
+    {
+      "rule_id": "SIG-001",
+      "rule_name": "Progress Note Signed by Provider",
+      "category": "Documentation",
+      "priority": "medium",
+      "status": "pass",
+      "message": "Progress note is signed by the provider.",
+      "red_flag_level": "none",
+      "detail": {}
+    },
+    {
+      "rule_id": "CQ-001",
+      "rule_name": "Content Quality Meets Documentation Standard",
+      "category": "Documentation",
+      "priority": "low",
+      "status": "pass",
+      "message": "Clinical narrative meets the documentation quality standard.",
+      "red_flag_level": "none",
+      "detail": {
+        "word_count": 54
+      }
+    },
+    {
+      "rule_id": "CRED-001",
+      "rule_name": "Provider License Matches CPT Code",
+      "category": "Credential",
+      "priority": "high",
+      "status": "pass",
+      "message": "Provider license is authorized for the billed CPT codes.",
+      "red_flag_level": "none",
+      "detail": {
+        "provider_license": "LCSW",
+        "cpt_codes": [
+          "90837"
+        ]
+      }
+    },
+    {
+      "rule_id": "TRV-001",
+      "rule_name": "Travel Feasibility Between Service Locations",
+      "category": "Travel",
+      "priority": "low",
+      "status": "pass",
+      "message": "Travel feasibility check passed or was not applicable.",
+      "red_flag_level": "none",
+      "detail": {}
+    },
+    {
+      "rule_id": "DLA-001",
+      "rule_name": "Functional Deficiency Score Aligns with Service Level",
+      "category": "Dla20",
+      "priority": "medium",
+      "status": "pass",
+      "message": "DLA-20 total score aligns with the billed intensive service level.",
+      "red_flag_level": "none",
+      "detail": {
+        "dla20_total_score": 2.0
+      }
+    },
+    {
+      "rule_id": "DLA-002",
+      "rule_name": "DLA-20 Goals Referenced in Treatment Plan",
+      "category": "Dla20",
+      "priority": "medium",
+      "status": "pass",
+      "message": "Treatment plan references the documented DLA-20 deficiency areas.",
+      "red_flag_level": "none",
+      "detail": {
+        "deficiency_areas": [
+          "coping_skills",
+          "housing_stability"
+        ]
+      }
+    },
+    {
+      "rule_id": "FRD-001",
+      "rule_name": "Clone Notes Detection",
+      "category": "Fraud Detection",
+      "priority": "high",
+      "status": "pass",
+      "message": "No cloned clinical notes were detected.",
+      "red_flag_level": "none",
+      "detail": {}
+    },
+    {
+      "rule_id": "FRD-002",
+      "rule_name": "Time Conflict Detection",
+      "category": "Fraud Detection",
+      "priority": "high",
+      "status": "pass",
+      "message": "No exact time conflicts were detected.",
+      "red_flag_level": "none",
+      "detail": {}
+    }
+  ],
+  "metadata": {
+    "processing_time_ms": 842,
+    "rules_executed": 19,
+    "ocr_documents_processed": 3
+  }
+}

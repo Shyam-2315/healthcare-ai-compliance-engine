@@ -1,0 +1,131 @@
+{
+  "claim_id": "CLAIM-001",
+  "provider_id": "PROV-001",
+  "patient_id": "PAT-001",
+  "claim_date": "2026-06-29",
+  "extracted_data": {
+    "claim_id": "CLAIM-001",
+    "provider_id": "PROV-001",
+    "patient_id": "PAT-001",
+    "claim_date": "2026-06-29",
+    "patient_name": "Jane Doe",
+    "patient_dob": "1990-05-14",
+    "provider_name": "Jordan Smith, LCSW",
+    "provider_license": "LCSW",
+    "provider_npi": "1234567890",
+    "service_dates": [
+      "2026-06-29"
+    ],
+    "session_start_time": "09:00:00",
+    "session_end_time": "10:00:00",
+    "session_duration_minutes": 60,
+    "service_location": "Clinic A",
+    "cpt_codes": [
+      "90837"
+    ],
+    "modifiers": [
+      "HN"
+    ],
+    "place_of_service": "11",
+    "diagnosis_codes": [
+      "F32.1"
+    ],
+    "billed_units": 4,
+    "treatment_plan_date": "2026-06-01",
+    "authorization_number": "AUTH-2026-4451",
+    "treatment_goals": [
+      "Improve coping skills for anxiety and depression symptoms",
+      "Strengthen housing stability and home routine"
+    ],
+    "clinical_narrative": "The clinician reviewed coping skills, grounding techniques, housing stability plans, budgeting steps, communication strategies, sleep routine goals, medication adherence, family stressors, problem solving, emotional regulation, safety planning, and community supports. The patient practiced coping skills in session, discussed housing follow-up tasks, identified barriers, responded to coaching, and agreed to continue the documented treatment goals.",
+    "clinical_note_date": "2026-06-29",
+    "provider_signature_present": true,
+    "dla20_deficiency_areas": [
+      "coping_skills",
+      "housing_stability"
+    ],
+    "dla20_scores": {
+      "housing_stability": 2,
+      "coping_skills": 2
+    },
+    "dla20_total_score": 2.0,
+    "treatment_plan_raw": "Patient Name: Jane Doe\nDOB: 05/14/1990\nProvider Name: Jordan Smith, LCSW\nProvider License: LCSW\nProvider NPI: 1234567890\nTreatment Plan Date: 06/01/2026\nAuthorization #: AUTH-2026-4451\nGoals:\n- Improve coping skills for anxiety and depression symptoms\n- Strengthen housing stability and home routine",
+    "clinical_notes_raw": "Service Date: 06/29/2026\nSession Time: 09:00 AM - 10:00 AM\nService Location: Clinic A\nPlace of Service: 11\nCPT: 90837-HN\nDiagnosis: F32.1\nBilled Units: 4\nClinical Narrative: The clinician reviewed coping skills, grounding techniques, housing stability plans, budgeting steps, communication strategies, sleep routine goals, medication adherence, family stressors, problem solving, emotional regulation, safety planning, and community supports. The patient practiced coping skills in session, discussed housing follow-up tasks, identified barriers, responded to coaching, and agreed to continue the documented treatment goals.\nProvider Signature: Electronically signed by Jordan Smith, LCSW",
+    "dla20_raw": "Coping Skills: 2\nHousing Stability: 2\nDLA-20 Total Score: 2"
+  },
+  "bhs_matrix": [
+    {
+      "proc_code": "90837",
+      "mod1": "HN",
+      "mod2": "HO",
+      "mod3": null,
+      "mod4": null,
+      "pos_allowed": "11,02",
+      "icd10": "F32.1,F41.1,Z63.0"
+    },
+    {
+      "proc_code": "90834",
+      "mod1": "HN",
+      "mod2": null,
+      "mod3": null,
+      "mod4": null,
+      "pos_allowed": "11,02",
+      "icd10": "F32.1,F41.1"
+    },
+    {
+      "proc_code": "H2017",
+      "mod1": "HQ",
+      "mod2": null,
+      "mod3": null,
+      "mod4": null,
+      "pos_allowed": "11,03",
+      "icd10": "F32.1,F33.1"
+    }
+  ],
+  "cpt_credentials": [
+    {
+      "cpt_code": "90837",
+      "license": [
+        "LCSW",
+        "LMHC"
+      ]
+    },
+    {
+      "cpt_code": "90834",
+      "license": [
+        "LCSW",
+        "LMHC"
+      ]
+    },
+    {
+      "cpt_code": "H2017",
+      "license": [
+        "LCSW"
+      ]
+    }
+  ],
+  "historical_claims": [
+    {
+      "claim_id": "HIST-001",
+      "provider_id": "PROV-001",
+      "patient_id": "PAT-009",
+      "service_date": "2026-06-28",
+      "session_start_time": "08:00",
+      "session_end_time": "09:00",
+      "service_location": "Clinic B",
+      "distance_miles": 12,
+      "clinical_notes_text": "Prior day note focused on medication adherence and family communication planning."
+    },
+    {
+      "claim_id": "HIST-002",
+      "provider_id": "PROV-001",
+      "patient_id": "PAT-010",
+      "service_date": "2026-06-29",
+      "session_start_time": "14:00",
+      "session_end_time": "15:00",
+      "service_location": "Clinic A",
+      "distance_miles": 0,
+      "clinical_notes_text": "Afternoon session note focused on school attendance and transportation coordination."
+    }
+  ]
+}

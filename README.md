@@ -106,3 +106,12 @@ POST /api/v1/ai/analyze-claim
 ```
 
 It accepts multipart claim documents plus master-data JSON, then runs OCR, AI extraction, rule validation, scoring, and returns the final AI findings payload.
+
+## Backend Integration
+
+Backend handoff documentation and sample payloads:
+
+- [docs/API_CONTRACT.md](docs/API_CONTRACT.md)
+- [docs/BACKEND_INTEGRATION.md](docs/BACKEND_INTEGRATION.md)
+- [docs/SAMPLE_PAYLOADS.md](docs/SAMPLE_PAYLOADS.md)
+- [docs/SWAGGER_TESTING.md](docs/SWAGGER_TESTING.md)

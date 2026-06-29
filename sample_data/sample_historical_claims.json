@@ -1,10 +1,24 @@
-{
-  "historical_claim_ids": ["CLM-0001", "CLM-0002"],
-  "claims": [
-    {
-      "claim_id": "CLM-0001",
-      "patient_id": "PAT-001",
-      "cpt_codes": ["90834"]
-    }
-  ]
-}
+[
+  {
+    "claim_id": "HIST-001",
+    "provider_id": "PROV-001",
+    "patient_id": "PAT-009",
+    "service_date": "2026-06-28",
+    "session_start_time": "08:00",
+    "session_end_time": "09:00",
+    "service_location": "Clinic B",
+    "distance_miles": 12,
+    "clinical_notes_text": "Prior day note focused on medication adherence and family communication planning."
+  },
+  {
+    "claim_id": "HIST-002",
+    "provider_id": "PROV-001",
+    "patient_id": "PAT-010",
+    "service_date": "2026-06-29",
+    "session_start_time": "14:00",
+    "session_end_time": "15:00",
+    "service_location": "Clinic A",
+    "distance_miles": 0,
+    "clinical_notes_text": "Afternoon session note focused on school attendance and transportation coordination."
+  }
+]

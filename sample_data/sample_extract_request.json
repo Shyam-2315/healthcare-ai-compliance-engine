@@ -1,0 +1,21 @@
+{
+  "claim_id": "CLAIM-001",
+  "provider_id": "PROV-001",
+  "patient_id": "PAT-001",
+  "claim_date": "2026-06-29",
+  "ocr_results": [
+    {
+      "document_type": "treatment_plan",
+      "raw_text": "Patient Name: Jane Doe\nDOB: 05/14/1990\nProvider Name: Jordan Smith, LCSW\nProvider License: LCSW\nProvider NPI: 1234567890\nTreatment Plan Date: 06/01/2026\nAuthorization #: AUTH-2026-4451\nGoals:\n- Improve coping skills for anxiety and depression symptoms\n- Strengthen housing stability and home routine"
+    },
+    {
+      "document_type": "clinical_notes",
+      "raw_text": "Service Date: 06/29/2026\nSession Time: 09:00 AM - 10:00 AM\nService Location: Clinic A\nPlace of Service: 11\nCPT: 90837-HN\nDiagnosis: F32.1\nBilled Units: 4\nClinical Narrative: The clinician reviewed coping skills, grounding techniques, housing stability plans, budgeting steps, communication strategies, sleep routine goals, medication adherence, family stressors, problem solving, emotional regulation, safety planning, and community supports. The patient practiced coping skills in session, discussed housing follow-up tasks, identified barriers, responded to coaching, and agreed to continue the documented treatment goals.\nProvider Signature: Electronically signed by Jordan Smith, LCSW"
+    },
+    {
+      "document_type": "dla20",
+      "raw_text": "Coping Skills: 2\nHousing Stability: 2\nDLA-20 Total Score: 2"
+    }
+  ],
+  "claim_context": {}
+}
