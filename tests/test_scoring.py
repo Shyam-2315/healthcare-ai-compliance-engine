@@ -1,6 +1,7 @@
 import pytest
 
 from app.services.rule_engine.base_rule import RedFlagLevel, RulePriority, RuleResult, RuleStatus
+from app.services.rule_engine.registry import get_all_rules
 from app.services.rule_engine.scoring import ComplianceScoringEngine
 
 
@@ -59,3 +60,15 @@ def test_score_band_logic(score: float, band: str) -> None:
 )
 def test_risk_level_logic(score: float, risk_level: str) -> None:
     assert ComplianceScoringEngine.risk_level(score) == risk_level
+
+
+def test_total_scoring_weight_is_106() -> None:
+    weights = {
+        RulePriority.HIGH: 7.0,
+        RulePriority.MEDIUM: 4.0,
+        RulePriority.LOW: 2.5,
+    }
+
+    total_weight = sum(weights[rule.priority] for rule in get_all_rules())
+
+    assert total_weight == 106.0
