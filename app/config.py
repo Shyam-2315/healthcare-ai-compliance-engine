@@ -1,8 +1,9 @@
 from functools import lru_cache
 from pathlib import Path
+from typing import Annotated
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -16,10 +17,10 @@ class Settings(BaseSettings):
     ocr_provider: str = "local"
     ai_provider: str = "local"
 
-    cors_origins: list[str] = Field(default_factory=lambda: ["*"])
+    cors_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["*"])
     cors_allow_credentials: bool = False
-    cors_allow_methods: list[str] = Field(default_factory=lambda: ["*"])
-    cors_allow_headers: list[str] = Field(default_factory=lambda: ["*"])
+    cors_allow_methods: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["*"])
+    cors_allow_headers: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["*"])
 
     azure_document_intelligence_endpoint: str | None = None
     azure_document_intelligence_key: str | None = None

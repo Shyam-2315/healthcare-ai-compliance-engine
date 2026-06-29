@@ -1,65 +1,108 @@
-﻿# healthcare-compliance-ai
+# healthcare-compliance-ai
 
-FastAPI microservice for AI processing in a healthcare compliance platform.
+## Project overview
 
-## Scope
+`healthcare-compliance-ai` is a FastAPI microservice for healthcare compliance workflows. It provides OCR, deterministic AI extraction, 19-rule validation, compliance scoring, and an end-to-end analyze-claim pipeline for backend integration.
 
-This service handles:
+The service does not include a database, frontend, authentication, user management, organization management, or claim storage.
 
-- OCR
-- AI extraction
-- Compliance rule validation
-- Compliance scoring
-- AI findings JSON responses
-- Swagger testing
-
-It intentionally does not include frontend UI, authentication, organizations, database persistence, or claim management workflows.
-
-## Run Locally
+## Local setup
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+cp .env.example .env
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-Swagger UI is available at:
+Swagger UI:
 
 ```text
-http://127.0.0.1:8000/docs
+http://127.0.0.1:8001/docs
 ```
 
 Health check:
 
 ```text
-GET /api/v1/ai/health
+http://127.0.0.1:8001/api/v1/ai/health
 ```
 
-Expected response:
+## Windows setup
 
-```json
-{
-  "status": "ok",
-  "service": "healthcare-compliance-ai",
-  "version": "1.0.0",
-  "environment": "local"
-}
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-## Configuration
+If `make` is not available on Windows, run the Python commands directly or use Docker Desktop with `docker compose`.
 
-Copy `.env.example` to `.env` and adjust values as needed.
+## Tesseract setup note
 
-Default providers are local deterministic implementations:
+Local OCR for images and scanned PDFs depends on `tesseract`. DOCX extraction does not require it, but image OCR and the scanned-PDF fallback do.
 
-- `OCR_PROVIDER=local`
-- `AI_PROVIDER=local`
+- Linux containers install `tesseract-ocr` in the Docker image.
+- On Windows, install Tesseract OCR separately and ensure the `tesseract` executable is available on `PATH`.
 
-Azure provider classes are included as integration points and fail fast when required settings are missing.
+## Docker setup
 
-## Tests
+Build and start the service:
 
 ```bash
-pytest
+docker compose up -d --build
 ```
+
+View logs:
+
+```bash
+docker compose logs -f ai-service
+```
+
+Stop the service:
+
+```bash
+docker compose down
+```
+
+The container listens on port `8001` and exposes the same Swagger and health URLs as the local setup.
+
+## Swagger URL
+
+```text
+http://127.0.0.1:8001/docs
+```
+
+## API list
+
+- `GET /api/v1/ai/health`
+- `POST /api/v1/ai/ocr`
+- `POST /api/v1/ai/extract`
+- `POST /api/v1/ai/validate`
+- `POST /api/v1/ai/analyze-claim`
+
+## Testing commands
+
+```bash
+python -m pytest -q
+python -m ruff check .
+python -m mypy app
+```
+
+Or, with `make`:
+
+```bash
+make check
+```
+
+## Backend integration endpoint
+
+The primary backend integration endpoint is:
+
+```text
+POST /api/v1/ai/analyze-claim
+```
+
+It accepts multipart claim documents plus master-data JSON, then runs OCR, AI extraction, rule validation, scoring, and returns the final AI findings payload.
