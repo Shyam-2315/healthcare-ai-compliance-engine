@@ -1,11 +1,46 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
-from app.api.schemas.ocr_schema import OCRResponse
+from pydantic import Field
+
+from app.api.schemas.common import APIModel
 
 
-class OCRClient(ABC):
+class OCRServiceError(Exception):
+    """Base exception for OCR service failures."""
+
+
+class UnsupportedFileFormatError(OCRServiceError):
+    """Raised when OCR receives an unsupported file extension."""
+
+
+class EmptyFileError(OCRServiceError):
+    """Raised when OCR receives an empty uploaded file."""
+
+
+class OCRProcessingError(OCRServiceError):
+    """Raised when OCR processing fails."""
+
+
+class OCRResult(APIModel):
+    document_id: str
+    document_type: str
+    file_name: str
+    raw_text: str
+    page_count: int = Field(ge=0)
+    confidence: float = Field(ge=0.0, le=1.0)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class OCRServiceBase(ABC):
     provider_name: str
 
     @abstractmethod
-    async def extract_text(self, content: bytes, filename: str | None = None) -> OCRResponse:
+    def extract_text(self, file_path: str, document_type: str) -> OCRResult:
         raise NotImplementedError
+
+    def extract_batch(self, file_paths: list[str], document_type: str) -> list[OCRResult]:
+        return [self.extract_text(file_path, document_type) for file_path in file_paths]
+
+
+OCRClient = OCRServiceBase
