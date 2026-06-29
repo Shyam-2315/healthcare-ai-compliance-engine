@@ -97,6 +97,25 @@ Or, with `make`:
 make check
 ```
 
+## Notebook Demo
+
+Run the demo notebook from the project root:
+
+```bash
+jupyter notebook notebooks/healthcare_compliance_ai_demo.ipynb
+```
+
+## Jupyter Notebook POC
+
+Run:
+
+```bash
+python -m pip install notebook ipykernel pandas
+jupyter notebook notebooks/healthcare_compliance_ai_poc.ipynb
+```
+
+This notebook is for demo and POC use only. Production integration remains through the FastAPI APIs.
+
 ## Backend integration endpoint
 
 The primary backend integration endpoint is:
