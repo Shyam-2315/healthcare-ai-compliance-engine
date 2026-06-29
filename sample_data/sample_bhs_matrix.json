@@ -1,0 +1,10 @@
+{
+  "matrix_name": "Sample BHS Compliance Matrix",
+  "version": "sample",
+  "rules": [
+    {
+      "rule_id": "TP-001",
+      "description": "Treatment plan must be present for covered behavioral health services."
+    }
+  ]
+}

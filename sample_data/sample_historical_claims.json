@@ -1,0 +1,10 @@
+{
+  "historical_claim_ids": ["CLM-0001", "CLM-0002"],
+  "claims": [
+    {
+      "claim_id": "CLM-0001",
+      "patient_id": "PAT-001",
+      "cpt_codes": ["90834"]
+    }
+  ]
+}
