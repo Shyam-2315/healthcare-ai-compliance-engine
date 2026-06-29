@@ -1,4 +1,8 @@
+from typing import Literal
+
 from app.api.schemas.common import ComplianceFinding, ComplianceScore
+
+RiskLevel = Literal["low", "medium", "high", "critical"]
 
 
 class ComplianceScorer:
@@ -14,14 +18,14 @@ class ComplianceScorer:
         penalty = sum(self._severity_weights[finding.severity] for finding in failed_findings)
         score = max(0, 100 - penalty)
         return ComplianceScore(
-            score=score,
+            compliance_score=score,
             risk_level=self._risk_level(score),
             failed_rules=len(failed_findings),
             total_rules=len(findings),
         )
 
     @staticmethod
-    def _risk_level(score: int) -> str:
+    def _risk_level(score: int) -> RiskLevel:
         if score >= 90:
             return "low"
         if score >= 75:

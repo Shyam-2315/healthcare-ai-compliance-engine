@@ -50,7 +50,8 @@ async def extract_claim(request: ExtractionRequest) -> ExtractionResponse:
 )
 async def validate_claim(request: ValidationRequest) -> ValidationResponse:
     engine = ComplianceRuleEngine()
-    findings = engine.validate(request.claim, context=request.context)
+    claim = request.claim.model_dump(exclude_none=True)
+    findings = engine.validate(claim, context=request.context)
     score = ComplianceScorer().score(findings)
     return ValidationResponse(findings=findings, score=score)
 
@@ -67,6 +68,9 @@ async def analyze_claim(request: AnalyzeRequest) -> AnalyzeResponse:
     )
     validation = ValidationRequest(claim=extraction.extracted_fields, context=request.context)
     engine = ComplianceRuleEngine()
-    findings = engine.validate(validation.claim, context=validation.context)
+    findings = engine.validate(
+        validation.claim.model_dump(exclude_none=True),
+        context=validation.context,
+    )
     score = ComplianceScorer().score(findings)
     return AnalyzeResponse(extraction=extraction, findings=findings, score=score)
