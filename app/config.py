@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -6,8 +7,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     service_name: str = "healthcare-compliance-ai"
-    version: str = "1.0.0"
+    app_version: str = "1.0.0"
     environment: str = "local"
+    log_level: str = "INFO"
+    max_upload_size_mb: int = 10
+    request_timeout_seconds: int = 60
+    temp_upload_dir: str = ".tmp_uploads"
     ocr_provider: str = "local"
     ai_provider: str = "local"
 
@@ -41,6 +46,23 @@ class Settings(BaseSettings):
         if isinstance(value, str):
             return [item.strip() for item in value.split(",") if item.strip()]
         return value
+
+    @field_validator("log_level", mode="before")
+    @classmethod
+    def normalize_log_level(cls, value: str) -> str:
+        return value.upper()
+
+    @property
+    def version(self) -> str:
+        return self.app_version
+
+    @property
+    def max_upload_size_bytes(self) -> int:
+        return self.max_upload_size_mb * 1024 * 1024
+
+    @property
+    def temp_upload_path(self) -> Path:
+        return Path(self.temp_upload_dir)
 
 
 @lru_cache

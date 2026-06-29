@@ -4,22 +4,15 @@ from typing import Any
 from pydantic import Field
 
 from app.api.schemas.common import APIModel
+from app.utils import exceptions as app_exceptions
+
+EmptyFileError = app_exceptions.EmptyFileError
+OCRProcessingError = app_exceptions.OCRProcessingError
+UnsupportedFileFormatError = app_exceptions.UnsupportedFileTypeError
 
 
-class OCRServiceError(Exception):
-    """Base exception for OCR service failures."""
-
-
-class UnsupportedFileFormatError(OCRServiceError):
-    """Raised when OCR receives an unsupported file extension."""
-
-
-class EmptyFileError(OCRServiceError):
-    """Raised when OCR receives an empty uploaded file."""
-
-
-class OCRProcessingError(OCRServiceError):
-    """Raised when OCR processing fails."""
+class OCRServiceError(OCRProcessingError):
+    """Compatibility base for OCR service failures."""
 
 
 class OCRResult(APIModel):

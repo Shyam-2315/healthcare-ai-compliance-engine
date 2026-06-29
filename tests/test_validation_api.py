@@ -93,7 +93,10 @@ def test_invalid_cpt_code_fails_schema_validation() -> None:
     response = client.post("/api/v1/ai/validate", json=payload)
 
     assert response.status_code == 422
-    assert response.json()["error"] == "validation_error"
+    body = response.json()
+    assert body["status"] == "error"
+    assert body["error_code"] == "VALIDATION_ERROR"
+    assert body["request_id"]
 
 
 def test_missing_optional_extracted_fields_do_not_crash_api() -> None:
@@ -123,5 +126,6 @@ def test_invalid_master_data_shape_returns_clean_error() -> None:
 
     assert response.status_code == 422
     body = response.json()
-    assert body["error"] == "validation_error"
+    assert body["status"] == "error"
+    assert body["error_code"] == "VALIDATION_ERROR"
     assert body["message"] == "Request validation failed."
