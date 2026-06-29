@@ -115,3 +115,12 @@ Backend handoff documentation and sample payloads:
 - [docs/BACKEND_INTEGRATION.md](docs/BACKEND_INTEGRATION.md)
 - [docs/SAMPLE_PAYLOADS.md](docs/SAMPLE_PAYLOADS.md)
 - [docs/SWAGGER_TESTING.md](docs/SWAGGER_TESTING.md)
+
+## Production Handover
+
+Production handover and release references:
+
+- [CHANGELOG.md](CHANGELOG.md)
+- [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
+- [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md)
+- [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md)
