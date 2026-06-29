@@ -13,7 +13,12 @@ from app.api.schemas.extraction_schema import (
     OCRTextInput,
 )
 from app.api.schemas.ocr_schema import OCRResponse, OCRResultResponse
-from app.api.schemas.validation_schema import ValidationRequest, ValidationResponse
+from app.api.schemas.validation_schema import (
+    ValidationFlagSummary,
+    ValidationRequest,
+    ValidationResponse,
+    ValidationRuleResult,
+)
 from app.config import get_settings
 from app.services.ai.factory import get_ai_service
 from app.services.ocr.base import (
@@ -23,7 +28,8 @@ from app.services.ocr.base import (
 )
 from app.services.ocr.factory import get_ocr_service
 from app.services.ocr.local_ocr import SUPPORTED_OCR_EXTENSIONS
-from app.services.rule_engine.engine import ComplianceRuleEngine
+from app.services.rule_engine.engine import ComplianceRuleEngine, RuleEngine
+from app.services.rule_engine.registry import get_all_rules
 from app.services.rule_engine.scoring import ComplianceScorer
 from app.utils.file_utils import cleanup_temp_file, save_upload_file_temp
 
@@ -100,14 +106,54 @@ async def extract_claim(request: ExtractionRequest) -> ExtractedClaimData:
 @router.post(
     "/validate",
     response_model=ValidationResponse,
-    summary="Validate extracted claim data against compliance rules",
+    summary="Run the full 19-rule compliance engine on extracted claim data",
 )
 async def validate_claim(request: ValidationRequest) -> ValidationResponse:
-    engine = ComplianceRuleEngine()
-    claim = request.claim.model_dump(exclude_none=True)
-    findings = engine.validate(claim, context=request.context)
-    score = ComplianceScorer().score(findings)
-    return ValidationResponse(findings=findings, score=score)
+    extracted_data = request.extracted_data.model_dump(exclude_none=True)
+    extracted_data.setdefault("claim_id", request.claim_id)
+    extracted_data.setdefault("provider_id", request.provider_id)
+    extracted_data.setdefault("patient_id", request.patient_id)
+    extracted_data.setdefault("claim_date", request.claim_date)
+
+    engine = RuleEngine(get_all_rules())
+    output = engine.run(
+        extracted_data,
+        {"rows": [entry.model_dump(exclude_none=True) for entry in request.bhs_matrix]},
+        {
+            "cpt_credentials": [
+                entry.model_dump(exclude_none=True) for entry in request.cpt_credentials
+            ]
+        },
+        request.historical_claims,
+    )
+
+    results = [
+        ValidationRuleResult(
+            rule_id=result.rule_id,
+            rule_name=result.rule_name,
+            category=_format_category(result.category),
+            priority=result.priority,
+            status=result.status,
+            message=result.message,
+            red_flag_level=result.red_flag_level,
+            detail=result.detail,
+        )
+        for result in output.results
+    ]
+
+    return ValidationResponse(
+        claim_id=request.claim_id,
+        compliance_score=output.compliance_score,
+        score_band=output.score_band,
+        passed_rules=[result.rule_id for result in output.passed_rules],
+        failed_rules=[result.rule_id for result in output.failed_rules],
+        flag_summary=ValidationFlagSummary(
+            high=output.high_red_flags,
+            medium=output.medium_red_flags,
+            low=output.low_red_flags,
+        ),
+        results=results,
+    )
 
 
 @router.post(
@@ -127,11 +173,10 @@ async def analyze_claim(request: AnalyzeRequest) -> AnalyzeResponse:
         confidence=1.0,
         provider=ai_service.provider_name,
     )
-    validation = ValidationRequest(claim=extraction.extracted_fields, context=request.context)
     engine = ComplianceRuleEngine()
     findings = engine.validate(
-        validation.claim.model_dump(exclude_none=True),
-        context=validation.context,
+        extraction.extracted_fields.model_dump(exclude_none=True),
+        context=request.context,
     )
     score = ComplianceScorer().score(findings)
     return AnalyzeResponse(extraction=extraction, findings=findings, score=score)
@@ -140,3 +185,7 @@ async def analyze_claim(request: AnalyzeRequest) -> AnalyzeResponse:
 def _error_response(*, status_code: int, error: str, message: str) -> JSONResponse:
     payload = ErrorResponse(error=error, message=message)
     return JSONResponse(status_code=status_code, content=payload.model_dump())
+
+
+def _format_category(value: str) -> str:
+    return value.replace("_", " ").title()

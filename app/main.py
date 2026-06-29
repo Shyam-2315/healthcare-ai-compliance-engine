@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -50,7 +51,7 @@ async def validation_exception_handler(
     error = ErrorResponse(
         error="validation_error",
         message="Request validation failed.",
-        details={"errors": exc.errors(), "path": request.url.path},
+        details={"errors": _json_safe(exc.errors()), "path": request.url.path},
     )
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -78,3 +79,15 @@ async def root() -> dict[str, str]:
 
 def create_app() -> FastAPI:
     return app
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_json_safe(item) for item in value)
+    if isinstance(value, Exception):
+        return str(value)
+    return value

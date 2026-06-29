@@ -40,7 +40,7 @@ class ExtractedClaimData(APIModel):
     provider_signature_present: bool | None = None
     dla20_deficiency_areas: list[str] = Field(default_factory=list)
     dla20_scores: dict[str, int] = Field(default_factory=dict)
-    dla20_total_score: int | None = Field(default=None, ge=0)
+    dla20_total_score: float | None = Field(default=None, ge=0)
     treatment_plan_raw: str | None = None
     clinical_notes_raw: str | None = None
     dla20_raw: str | None = None

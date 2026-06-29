@@ -126,7 +126,9 @@ def normalize_cpt_credentials(cpt_credentials: Any) -> dict[str, set[str]]:
             if code:
                 normalized[code] = {
                     normalize_text(value).upper()
-                    for value in ensure_list(item.get("licenses") or item.get("credentials"))
+                    for value in ensure_list(
+                        item.get("licenses") or item.get("credentials") or item.get("license")
+                    )
                     if normalize_text(value)
                 }
     return normalized
